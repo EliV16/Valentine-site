@@ -88,6 +88,8 @@
       margin-top: 20px;
       display: none;
       z-index: 2;
+      direction: rtl; /* Sets right-to-left text direction */
+      text-align: center;
     }
     /* New text above the heart */
     #clickText {
@@ -96,6 +98,13 @@
       margin-bottom: 20px;
       z-index: 2;
       transition: transform 0.2s ease-out;
+    }
+    /* Center the love GIF when it appears */
+    #loveGif {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 100%;
+      height: auto;
     }
     .flying-heart {
       position: absolute;
@@ -144,11 +153,13 @@
   <!-- Page 2: Heart Interaction -->
   <div id="page2" class="page">
     <div id="heartContainer">
-      <div id="clickText">Click the heart</div>
+      <div id="clickText">Press the Heart!</div>
       <div id="heart">❤️</div>
       <!-- The local love.gif is initially hidden -->
-      <img id="loveGif" src="love.gif" alt="Love Gif" style="max-width: 100%; height: auto; margin-bottom: 20px; display: none;">
-      <div id="loveMessage">I love you so much!</div>
+      <img id="loveGif" src="love.gif" alt="Love Gif" style="display: none;">
+      <div id="loveMessage">
+        אני אוהב אותך מאמי שלי את הכי מושלמת בעולם לא הייתי יכול לבקש מישהי יותר טובה ממך!!
+      </div>
     </div>
   </div>
 
