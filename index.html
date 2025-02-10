@@ -131,8 +131,8 @@
   <!-- Page 1: Valentine Question -->
   <div id="page1" class="page">
     <div class="content-container">
-      <!-- Added GIF above the question -->
-      <img id="valentineGif" src="first" alt="Valentine Gif" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+      <!-- Display the local valentine.gif above the question -->
+      <img id="valentineGif" src="valentine.gif" alt="Valentine Gif" style="max-width: 100%; height: auto; margin-bottom: 20px;">
       <h1 id="question">Will you be my Valentine?</h1>
       <div class="button-container">
         <button id="yesButton" class="button">Yes</button>
@@ -146,9 +146,9 @@
     <div id="heartContainer">
       <div id="clickText">Click the heart</div>
       <div id="heart">❤️</div>
-      <!-- The love GIF is initially hidden -->
-      <img id="loveGif" src="second" alt="Love Gif" style="max-width: 100%; height: auto; margin-bottom: 20px; display: none;">
-      <div id="loveMessage">I love you so much!</div>
+      <!-- The local love.gif is initially hidden -->
+      <img id="loveGif" src="love.gif" alt="Love Gif" style="max-width: 100%; height: auto; margin-bottom: 20px; display: none;">
+      <div id="loveMessage">!!אני אוהב אותך מאמי שלי את הכי מושלמת בעולם לא הייתי יכול לבקש מישהי יותר טובה ממך</div>
     </div>
   </div>
 
@@ -186,7 +186,7 @@
       if (heartClicks >= 20) {
         // Hide the "Click the heart" text...
         clickText.style.display = 'none';
-        // ...then show the love GIF.
+        // ...then show the local love GIF.
         loveGif.style.display = 'block';
         
         heart.style.transition = 'transform 0.5s, opacity 0.5s';
