@@ -49,7 +49,6 @@
       border-radius: 5px;
       background-color: white;
     }
-
     /* Yes Button Styles */
     #yesButton {
       background-color: white;
@@ -61,7 +60,6 @@
       background-color: lightgreen;
       color: white;
     }
-
     /* No Button Styles */
     #noButton {
       background-color: white;
@@ -76,7 +74,6 @@
       background-color: lightcoral;
       color: white;
     }
-
     /* Heart and message styles */
     #heart {
       font-size: 5em;
@@ -87,22 +84,19 @@
       user-select: none;
     }
     #loveMessage {
-	  font-weight:bold;
       font-size: 2em;
       margin-top: 20px;
       display: none;
       z-index: 2;
     }
-    
     /* New text above the heart */
     #clickText {
-	  font-weight: bold;
       font-size: 1.5em;
+      font-weight: bold;
       margin-bottom: 20px;
       z-index: 2;
       transition: transform 0.2s ease-out;
     }
-
     .flying-heart {
       position: absolute;
       font-size: 1.5em;
@@ -137,6 +131,8 @@
   <!-- Page 1: Valentine Question -->
   <div id="page1" class="page">
     <div class="content-container">
+      <!-- Added GIF above the question -->
+      <img id="valentineGif" src="your-gif-url-here" alt="Valentine Gif" style="max-width: 100%; height: auto; margin-bottom: 20px;">
       <h1 id="question">Will you be my Valentine?</h1>
       <div class="button-container">
         <button id="yesButton" class="button">Yes</button>
@@ -148,9 +144,11 @@
   <!-- Page 2: Heart Interaction -->
   <div id="page2" class="page">
     <div id="heartContainer">
-      <div id="clickText">Click the heart!</div>
+      <div id="clickText">Click the heart</div>
       <div id="heart">❤️</div>
-      <div id="loveMessage">!!אני אוהב אותך מאמי שלי את הכי מושלמת בעולם לא הייתי יכול לבקש מישהי יותר טובה ממך</div>
+      <!-- The love GIF is initially hidden -->
+      <img id="loveGif" src="your-love-gif-url-here" alt="Love Gif" style="max-width: 100%; height: auto; margin-bottom: 20px; display: none;">
+      <div id="loveMessage">I love you so much!</div>
     </div>
   </div>
 
@@ -172,6 +170,7 @@
     const heart = document.getElementById('heart');
     const loveMessage = document.getElementById('loveMessage');
     const clickText = document.getElementById('clickText');
+    const loveGif = document.getElementById('loveGif');
     let heartClicks = 0;
     let heartScale = 1;
     
@@ -180,14 +179,15 @@
       heartScale += 0.1;
       heart.style.transform = `scale(${heartScale})`;
       
-      // Move the text upward away from the heart as it grows.
-      // (You can adjust the multiplier to change the movement distance.)
+      // Move the "Click the heart" text upward as the heart grows.
       const offset = (heartScale - 1) * 30;
       clickText.style.transform = `translateY(${-offset}px)`;
       
       if (heartClicks >= 20) {
-        // Hide the text when the heart "explodes"
+        // Hide the "Click the heart" text...
         clickText.style.display = 'none';
+        // ...then show the love GIF.
+        loveGif.style.display = 'block';
         
         heart.style.transition = 'transform 0.5s, opacity 0.5s';
         heart.style.transform = 'rotate(720deg) scale(5)';
