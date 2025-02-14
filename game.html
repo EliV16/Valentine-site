@@ -49,14 +49,14 @@
       heart.style.top = y + 'px';
       
       // Shorter delay to make it more challenging (0.5 to 1.2 seconds)
-      const delay = 200 + Math.random() * 300;
+      const delay = 200 + Math.random() * 200;
       moveTimeout = setTimeout(moveHeart, delay);
     }
 
     // Moves away quicker when hovering
     heart.addEventListener('mouseover', () => {
       clearTimeout(moveTimeout);
-      const hoverDelay = 100 + Math.random() * 200;
+      const hoverDelay = 100 + Math.random() * 100;
       moveTimeout = setTimeout(moveHeart, hoverDelay);
     });
 
