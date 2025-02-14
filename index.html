@@ -14,6 +14,7 @@
       width: 100%;
       height: 100%;
       font-family: Arial, sans-serif;
+      overflow: hidden; /* Hide scrollbars for the animation effects */
     }
     .page {
       background-color: #ffc0cb;
@@ -104,6 +105,48 @@
       max-width: 100%;
       height: auto;
     }
+    /* --- Explosion Effect Styles --- */
+    .explosion-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      z-index: 9999;
+    }
+    .small-heart {
+      position: absolute;
+      font-size: 2em;
+      transition: transform 1s ease-out, opacity 1s ease-out;
+    }
+    /* --- Heart Rain Styles --- */
+    .heart-rain-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 9998;
+    }
+    .rain-heart {
+      position: absolute;
+      font-size: 2em;
+      animation: fall 3s linear forwards;
+    }
+    @keyframes fall {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -159,6 +202,69 @@
     let heartClicks = 0;
     let heartScale = 1;
 
+    // --- Explosion effect: creates a burst of small hearts at (x, y) ---
+    function createHeartExplosion(x, y) {
+      const explosionContainer = document.createElement('div');
+      explosionContainer.classList.add('explosion-container');
+      document.body.appendChild(explosionContainer);
+      
+      const numHearts = 20;
+      for (let i = 0; i < numHearts; i++) {
+        const heartElem = document.createElement('div');
+        heartElem.classList.add('small-heart');
+        heartElem.innerText = '❤️';
+        // Position at the explosion center
+        heartElem.style.left = x + 'px';
+        heartElem.style.top = y + 'px';
+        explosionContainer.appendChild(heartElem);
+        
+        // Determine a random direction and distance
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 150 + 50;
+        const translateX = Math.cos(angle) * distance;
+        const translateY = Math.sin(angle) * distance;
+        // Allow a brief delay so the transition takes effect
+        setTimeout(() => {
+          heartElem.style.transform = `translate(${translateX}px, ${translateY}px)`;
+          heartElem.style.opacity = 0;
+        }, 10);
+      }
+      
+      // Remove the explosion container after the animation completes
+      setTimeout(() => {
+        explosionContainer.remove();
+      }, 1500);
+    }
+
+    // --- Heart rain effect: creates falling hearts for 10 seconds ---
+    function startHeartRain() {
+      const heartRainContainer = document.createElement('div');
+      heartRainContainer.classList.add('heart-rain-container');
+      document.body.appendChild(heartRainContainer);
+      
+      const interval = setInterval(() => {
+        const heartElem = document.createElement('div');
+        heartElem.classList.add('rain-heart');
+        heartElem.innerText = '❤️';
+        // Random starting horizontal position
+        const startX = Math.random() * window.innerWidth;
+        heartElem.style.left = startX + 'px';
+        heartRainContainer.appendChild(heartElem);
+        // Remove heart when the falling animation ends
+        heartElem.addEventListener('animationend', () => {
+          heartElem.remove();
+        });
+      }, 300);
+      
+      // Stop spawning hearts after 10 seconds and remove the container a bit later
+      setTimeout(() => {
+        clearInterval(interval);
+        setTimeout(() => {
+          heartRainContainer.remove();
+        }, 3000);
+      }, 10000);
+    }
+
     heart.addEventListener('click', () => {
       heartClicks++;
       heartScale += 0.1;
@@ -169,11 +275,21 @@
       if (heartClicks >= 20) {
         clickText.style.display = 'none';
         loveGif.style.display = 'block';
+
+        // Get the heart's center coordinates for the explosion effect
+        const rect = heart.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        createHeartExplosion(centerX, centerY);
+        startHeartRain();
+
+        // Disable clicking on loveGif for 10 seconds to prevent spam
         loveGif.style.pointerEvents = 'none';
         setTimeout(() => {
           loveGif.style.pointerEvents = 'auto';
         }, 10000);
 
+        // Animate the heart: rotate, scale up, and fade out
         heart.style.transition = 'transform 0.5s, opacity 0.5s';
         heart.style.transform = 'rotate(720deg) scale(5)';
         heart.style.opacity = '0';
@@ -184,7 +300,6 @@
       }
     });
 
-    // This event listener will only work after pointer events are re-enabled
     loveGif.addEventListener('click', () => {
       window.location.href = 'game.html';
     });
