@@ -49,7 +49,6 @@
       border-radius: 5px;
       background-color: white;
     }
-    /* Yes Button Styles */
     #yesButton {
       background-color: white;
       color: lightgreen;
@@ -60,7 +59,6 @@
       background-color: lightgreen;
       color: white;
     }
-    /* No Button Styles */
     #noButton {
       background-color: white;
       color: lightcoral;
@@ -69,12 +67,12 @@
       height: 60px;
       width: 100px;
       flex-shrink: 0;
+      position: relative;
     }
     #noButton:hover {
       background-color: lightcoral;
       color: white;
     }
-    /* Heart and message styles */
     #heart {
       font-size: 5em;
       cursor: pointer;
@@ -84,15 +82,14 @@
       user-select: none;
     }
     #loveMessage {
-	  font-weight: bold;
+      font-weight: bold;
       font-size: 2em;
       margin-top: 20px;
       display: none;
       z-index: 2;
-      direction: rtl; /* Sets right-to-left text direction */
+      direction: rtl;
       text-align: center;
     }
-    /* New text above the heart */
     #clickText {
       font-size: 1.5em;
       font-weight: bold;
@@ -100,39 +97,12 @@
       z-index: 2;
       transition: transform 0.2s ease-out;
     }
-    /* Center the love GIF when it appears */
     #loveGif {
-      display: block;
+      display: none;
+      cursor: pointer;
       margin: 0 auto 20px auto;
       max-width: 100%;
       height: auto;
-    }
-    .flying-heart {
-      position: absolute;
-      font-size: 1.5em;
-      pointer-events: none;
-      z-index: 1;
-      animation: fly 1s forwards;
-      user-select: none;
-    }
-    @keyframes fly {
-      0% { transform: translate(0, 0) scale(1); opacity: 1; }
-      100% { transform: translate(var(--tx), var(--ty)) scale(0.5); opacity: 0; }
-    }
-    .falling-heart {
-      position: absolute;
-      top: -50px;
-      font-size: 1.5em;
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
-      animation-name: fall;
-      animation-timing-function: linear;
-      animation-fill-mode: forwards;
-    }
-    @keyframes fall {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
     }
   </style>
 </head>
@@ -141,7 +111,6 @@
   <!-- Page 1: Valentine Question -->
   <div id="page1" class="page">
     <div class="content-container">
-      <!-- Display the local valentine.gif above the question -->
       <img id="valentineGif" src="valentine.gif" alt="Valentine Gif" style="max-width: 100%; height: auto; margin-bottom: 20px;">
       <h1 id="question">Will you be my Valentine?</h1>
       <div class="button-container">
@@ -156,8 +125,7 @@
     <div id="heartContainer">
       <div id="clickText">Press the Heart!</div>
       <div id="heart">❤️</div>
-      <!-- The local love.gif is initially hidden -->
-      <img id="loveGif" src="love.gif" alt="Love Gif" style="display: none;">
+      <img id="loveGif" src="love.gif" alt="Love Gif">
       <div id="loveMessage">
         אני אוהב אותך מאמי שלי את הכי מושלמת בעולם לא הייתי יכול לבקש מישהי יותר טובה ממך!!
       </div>
@@ -168,97 +136,52 @@
     const yesButton = document.getElementById('yesButton');
     const noButton = document.getElementById('noButton');
     let yesFontSize = 1.8;
-    
+
     noButton.addEventListener('click', () => {
       yesFontSize += 0.2;
       yesButton.style.fontSize = yesFontSize + 'em';
+      const randomX = Math.floor(Math.random() * (window.innerWidth - noButton.offsetWidth));
+      const randomY = Math.floor(Math.random() * (window.innerHeight - noButton.offsetHeight));
+      noButton.style.position = 'absolute';
+      noButton.style.left = randomX + 'px';
+      noButton.style.top = randomY + 'px';
     });
-    
+
     yesButton.addEventListener('click', () => {
       document.getElementById('page1').style.display = 'none';
       document.getElementById('page2').style.display = 'flex';
     });
-    
+
     const heart = document.getElementById('heart');
     const loveMessage = document.getElementById('loveMessage');
     const clickText = document.getElementById('clickText');
     const loveGif = document.getElementById('loveGif');
     let heartClicks = 0;
     let heartScale = 1;
-    
+
     heart.addEventListener('click', () => {
       heartClicks++;
       heartScale += 0.1;
       heart.style.transform = `scale(${heartScale})`;
-      
-      // Move the "Click the heart" text upward as the heart grows.
       const offset = (heartScale - 1) * 30;
       clickText.style.transform = `translateY(${-offset}px)`;
-      
+
       if (heartClicks >= 20) {
-        // Hide the "Click the heart" text...
         clickText.style.display = 'none';
-        // ...then show the local love GIF.
         loveGif.style.display = 'block';
-        
         heart.style.transition = 'transform 0.5s, opacity 0.5s';
         heart.style.transform = 'rotate(720deg) scale(5)';
         heart.style.opacity = '0';
-        
-        createFlyingHearts(30);
-        startRainHearts();
-        
         setTimeout(() => {
           heart.style.display = 'none';
           loveMessage.style.display = 'block';
         }, 500);
       }
     });
-    
-    function createFlyingHearts(count) {
-      for (let i = 0; i < count; i++) {
-        const flyingHeart = document.createElement('div');
-        flyingHeart.classList.add('flying-heart');
-        flyingHeart.textContent = '❤️';
-        const rect = heart.getBoundingClientRect();
-        flyingHeart.style.left = rect.left + rect.width / 2 + 'px';
-        flyingHeart.style.top = rect.top + rect.height / 2 + 'px';
-        
-        const angle = Math.random() * 2 * Math.PI;
-        const distance = 150 + Math.random() * 150;
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance;
-        flyingHeart.style.setProperty('--tx', dx + 'px');
-        flyingHeart.style.setProperty('--ty', dy + 'px');
-        
-        document.getElementById('page2').appendChild(flyingHeart);
-        setTimeout(() => {
-          flyingHeart.remove();
-        }, 1000);
-      }
-    }
-    
-    function spawnFallingHeart() {
-      const fallingHeart = document.createElement('div');
-      fallingHeart.classList.add('falling-heart');
-      fallingHeart.textContent = '❤️';
-      fallingHeart.style.left = Math.random() * window.innerWidth + 'px';
-      const duration = 2 + Math.random() * 2;
-      fallingHeart.style.animationDuration = duration + 's';
-      const delay = Math.random();
-      fallingHeart.style.animationDelay = delay + 's';
-      fallingHeart.style.opacity = (0.5 + Math.random() * 0.5).toString();
-      
-      document.getElementById('page2').appendChild(fallingHeart);
-      setTimeout(() => {
-        fallingHeart.remove();
-      }, (duration + delay) * 1000);
-    }
-    
-    function startRainHearts() {
-      setInterval(spawnFallingHeart, 200);
-    }
-  </script>
 
+    loveGif.addEventListener('click', () => {
+      window.location.href = 'game.html';
+    });
+  </script>
 </body>
 </html>
