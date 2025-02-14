@@ -169,6 +169,11 @@
       if (heartClicks >= 20) {
         clickText.style.display = 'none';
         loveGif.style.display = 'block';
+        loveGif.style.pointerEvents = 'none';
+        setTimeout(() => {
+          loveGif.style.pointerEvents = 'auto';
+        }, 10000);
+
         heart.style.transition = 'transform 0.5s, opacity 0.5s';
         heart.style.transform = 'rotate(720deg) scale(5)';
         heart.style.opacity = '0';
@@ -179,6 +184,7 @@
       }
     });
 
+    // This event listener will only work after pointer events are re-enabled
     loveGif.addEventListener('click', () => {
       window.location.href = 'game.html';
     });
