@@ -20,7 +20,7 @@
       font-size: 5em;
       position: absolute;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.1s, left 0.1s, top 0.1s;
     }
     #heart:hover {
       transform: scale(1.2);
@@ -39,15 +39,37 @@
   <script>
     const heart = document.getElementById('heart');
     const message = document.getElementById('message');
+    let moveTimeout;
 
     function moveHeart() {
+      clearTimeout(moveTimeout);
       const x = Math.random() * (window.innerWidth - heart.offsetWidth);
       const y = Math.random() * (window.innerHeight - heart.offsetHeight);
       heart.style.left = x + 'px';
       heart.style.top = y + 'px';
+      
+      // Shorter delay to make it more challenging (0.5 to 1.2 seconds)
+      const delay = 200 + Math.random() * 300;
+      moveTimeout = setTimeout(moveHeart, delay);
     }
 
-    heart.addEventListener('mouseover', moveHeart);
+    // Moves away quicker when hovering
+    heart.addEventListener('mouseover', () => {
+      clearTimeout(moveTimeout);
+      const hoverDelay = 100 + Math.random() * 200;
+      moveTimeout = setTimeout(moveHeart, hoverDelay);
+    });
+
+    // Random small jumps to make it unpredictable
+    setInterval(() => {
+      const jumpX = (Math.random() - 0.5) * 100;
+      const jumpY = (Math.random() - 0.5) * 100;
+      const currentX = parseFloat(heart.style.left || 0);
+      const currentY = parseFloat(heart.style.top || 0);
+      heart.style.left = Math.max(0, Math.min(window.innerWidth - heart.offsetWidth, currentX + jumpX)) + 'px';
+      heart.style.top = Math.max(0, Math.min(window.innerHeight - heart.offsetHeight, currentY + jumpY)) + 'px';
+    }, 800);
+
     heart.addEventListener('click', () => {
       heart.style.display = 'none';
       message.style.display = 'block';
